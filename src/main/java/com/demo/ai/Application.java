@@ -14,7 +14,7 @@ public class Application {
 
 	public static void main(String[] args) {
 		Text2Sql text2Sql = new SpringApplicationBuilder(Application.class).web(WebApplicationType.NONE).run(args).getBean(Text2Sql.class);
-		String question = "谁考的分最高？谁考的分最少？平均分又是多少？";
+		String question = "谁考的分最高？谁考的分最少？平均分又是多少？最接近平均分的是谁？";
 		logger.info("用户提问：\n{}", question);
 		String answer = text2Sql.query(question);
 		logger.info("AI回答：\n{}", answer);
