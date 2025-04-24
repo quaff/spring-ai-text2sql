@@ -1,9 +1,6 @@
 package com.demo.ai.text2sql;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.StringJoiner;
+import java.util.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +23,9 @@ public class JdbcClientTool {
     @Tool(description = "执行查询语句返回CSV格式结果")
     public String query(@ToolParam(description = "查询语句") String sql) {
         logger.info("Executing:\n{}", sql);
+        if (!sql.toLowerCase(Locale.ROOT).startsWith("select ")) {
+            return "只能执行查询";
+        }
         List<Map<String, Object>> rows = jdbcClient.sql(sql)
                 .query().listOfRows();
         if (rows.isEmpty())
