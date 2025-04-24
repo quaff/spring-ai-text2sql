@@ -1,0 +1,10 @@
+spring.application.name: spring-ai-text2sql
+
+spring.sql.init:
+  mode: always
+  continue-on-error: true
+
+spring.ai.openai:
+  base-url: https://api.deepseek.com
+  api-key: sk-288368f95ba34154b071ecf8d0ac56f1
+  chat.options.model: deepseek-chat
