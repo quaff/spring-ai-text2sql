@@ -21,7 +21,6 @@ repositories {
 dependencies {
 	implementation(platform("org.springframework.ai:spring-ai-bom:1.0.0-M7"))
 	implementation("org.springframework.boot:spring-boot-starter-jdbc")
-	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.ai:spring-ai-starter-model-openai")
 	runtimeOnly("org.springframework.boot:spring-boot-docker-compose")
 	runtimeOnly("com.mysql:mysql-connector-j")
