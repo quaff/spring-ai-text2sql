@@ -1,6 +1,5 @@
 package com.demo.ai.text2sql;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
@@ -37,7 +36,7 @@ public class DataSourceDatabaseInformation implements DatabaseInformation {
                     tables.add(new Table(tableName, rs.getString("REMARKS"), rs.getString("TABLE_CAT"), rs.getString("TABLE_SCHEM"), columns));
                 }
             }
-            this.tableSchemas = new ObjectMapper().writeValueAsString(tables);
+            this.tableSchemas = tables.toString();
         }
     }
 
