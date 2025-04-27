@@ -1,7 +1,6 @@
 package com.demo.ai.text2sql;
 
 import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.ai.tool.ToolCallbackProvider;
 import org.springframework.stereotype.Component;
 
 @Component
