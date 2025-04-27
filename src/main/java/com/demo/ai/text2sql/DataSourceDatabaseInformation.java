@@ -14,12 +14,15 @@ public class DataSourceDatabaseInformation implements DatabaseInformation {
 
     private final String databaseProductName;
 
+    private final String databaseVersion;
+
     private final String tableSchemas;
 
     public DataSourceDatabaseInformation(DataSource dataSource) throws Exception {
         try (Connection con = dataSource.getConnection()) {
             DatabaseMetaData dmd = con.getMetaData();
             this.databaseProductName = dmd.getDatabaseProductName();
+            this.databaseVersion = "%d.%d".formatted(dmd.getDatabaseMajorVersion(), dmd.getDatabaseMinorVersion());
             List<Table> tables = new ArrayList<>();
             try (ResultSet rs = dmd.getTables(con.getCatalog(), null, null,
                     new String[]{"TABLE"})) {
@@ -43,6 +46,11 @@ public class DataSourceDatabaseInformation implements DatabaseInformation {
     @Override
     public String getDatabaseProductName() {
         return this.databaseProductName;
+    }
+
+    @Override
+    public String getDatabaseVersion() {
+        return this.databaseVersion;
     }
 
     @Override

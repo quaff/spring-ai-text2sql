@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 public class DatabaseInformationAdvisor implements BaseAdvisor {
 
     private static final String DEFAULT_SYSTEM_TEXT = """
-            你是一个{databaseProductName}数据库专家。请帮助生成一个{databaseProductName}查询语句，然后执行这个查询语句回答问题。
+            你是一个{databaseProductName}数据库专家。请帮助生成一个{databaseProductName} {databaseVersion}查询语句，然后执行这个查询语句回答问题。
             
             ===Tables
             {tableSchemas}
@@ -29,6 +29,7 @@ public class DatabaseInformationAdvisor implements BaseAdvisor {
     public AdvisedRequest before(AdvisedRequest advisedRequest) {
         Map<String, Object> systemParams = new HashMap<>(advisedRequest.systemParams());
         systemParams.put("databaseProductName", databaseInformation.getDatabaseProductName());
+        systemParams.put("databaseVersion", databaseInformation.getDatabaseVersion());
         systemParams.put("tableSchemas", databaseInformation.getTableSchemas());
         return AdvisedRequest.from(advisedRequest)
                 .systemText(DEFAULT_SYSTEM_TEXT)

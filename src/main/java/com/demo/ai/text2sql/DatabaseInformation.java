@@ -4,6 +4,8 @@ public interface DatabaseInformation {
 
     String getDatabaseProductName();
 
+    String getDatabaseVersion();
+
     String getTableSchemas();
 
 }
