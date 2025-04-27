@@ -2,6 +2,10 @@ package com.demo.ai.text2sql;
 
 import java.util.*;
 
+import net.sf.jsqlparser.JSQLParserException;
+import net.sf.jsqlparser.parser.CCJSqlParserUtil;
+import net.sf.jsqlparser.statement.Statement;
+import net.sf.jsqlparser.statement.select.Select;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.tool.annotation.Tool;
@@ -23,8 +27,8 @@ public class JdbcClientTool {
     @Tool(description = "执行查询语句返回CSV格式结果")
     public String query(@ToolParam(description = "查询语句") String sql) {
         logger.info("Executing:\n{}", sql);
-        if (!sql.toLowerCase(Locale.ROOT).startsWith("select ")) {
-            return "只能执行查询";
+        if (!isAllowed(sql)) {
+            return "不能执行此查询语句";
         }
         List<Map<String, Object>> rows = jdbcClient.sql(sql)
                 .query().listOfRows();
@@ -43,4 +47,15 @@ public class JdbcClientTool {
         logger.info("Executed result:\n{}", result);
         return result;
     }
+
+    private boolean isAllowed(String sql) {
+        try {
+            Statement statement = CCJSqlParserUtil.parse(sql);
+            return statement instanceof Select;
+        } catch (JSQLParserException e) {
+            logger.error("Invalid SQL:\n" + sql, e);
+            return false;
+        }
+    }
+
 }

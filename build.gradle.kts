@@ -22,6 +22,7 @@ dependencies {
 	implementation(platform("org.springframework.ai:spring-ai-bom:1.0.0-M7"))
 	implementation("org.springframework.boot:spring-boot-starter-jdbc")
 	implementation("org.springframework.ai:spring-ai-starter-model-openai")
+	implementation("com.github.jsqlparser:jsqlparser:5.1")
 	runtimeOnly("org.springframework.boot:spring-boot-docker-compose")
 	runtimeOnly("com.mysql:mysql-connector-j")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
