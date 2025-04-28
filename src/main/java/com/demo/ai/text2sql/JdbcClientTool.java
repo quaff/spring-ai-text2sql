@@ -13,7 +13,7 @@ import org.springframework.ai.tool.annotation.ToolParam;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Component;
 
-@Component
+@ToolComponent
 public class JdbcClientTool {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
