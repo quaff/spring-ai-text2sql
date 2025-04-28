@@ -9,6 +9,7 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,49 +17,25 @@ import java.util.List;
 @EnableConfigurationProperties(DatabaseInformationProperties.class)
 public class DataSourceDatabaseInformation implements DatabaseInformation {
 
+    private final DataSource dataSource;
+
+    private final DatabaseInformationProperties databaseInformationProperties;
+
     private final String databaseProductName;
 
     private final String databaseVersion;
 
-    private final String tableSchemas;
-
-    public DataSourceDatabaseInformation(DatabaseInformationProperties databaseInformationProperties, DataSource dataSource) throws Exception {
-        try (Connection con = dataSource.getConnection()) {
-            DatabaseMetaData dmd = con.getMetaData();
-            if (databaseInformationProperties.getDatabaseProductName() != null) {
-                this.databaseProductName = databaseInformationProperties.getDatabaseProductName();
-            } else {
+    public DataSourceDatabaseInformation(DataSource dataSource, DatabaseInformationProperties databaseInformationProperties) throws Exception {
+        this.dataSource = dataSource;
+        this.databaseInformationProperties = databaseInformationProperties;
+        if (databaseInformationProperties.getDatabaseProductName() != null) {
+            this.databaseProductName = databaseInformationProperties.getDatabaseProductName();
+            this.databaseVersion = databaseInformationProperties.getDatabaseVersion();
+        } else {
+            try (Connection con = dataSource.getConnection()) {
+                DatabaseMetaData dmd = con.getMetaData();
                 this.databaseProductName = dmd.getDatabaseProductName();
-            }
-            if (databaseInformationProperties.getDatabaseVersion() != null) {
-                this.databaseVersion = databaseInformationProperties.getDatabaseVersion();
-            } else {
                 this.databaseVersion = "%d.%d".formatted(dmd.getDatabaseMajorVersion(), dmd.getDatabaseMinorVersion());
-            }
-            if (databaseInformationProperties.getTableSchemas() != null) {
-                this.tableSchemas = databaseInformationProperties.getTableSchemas();
-            }
-            else {
-                List<Table> tables = new ArrayList<>();
-                try (ResultSet rs = dmd.getTables(con.getCatalog(), null, null,
-                        new String[]{"TABLE"})) {
-                    while (rs.next()) {
-                        String tableName = rs.getString("TABLE_NAME");
-                        if (!isAllowed(databaseInformationProperties.getTablePatterns(), tableName)) {
-                            continue;
-                        }
-                        List<Column> columns = new ArrayList<>();
-                        try (ResultSet cols = dmd.getColumns(null, null, tableName, null)) {
-                            while (cols.next()) {
-                                columns.add(
-                                        new Column(cols.getString("COLUMN_NAME"), cols.getString("TYPE_NAME"), cols.getString("REMARKS"))
-                                );
-                            }
-                        }
-                        tables.add(new Table(tableName, rs.getString("REMARKS"), rs.getString("TABLE_CAT"), rs.getString("TABLE_SCHEM"), columns));
-                    }
-                }
-                this.tableSchemas = tables.toString();
             }
         }
     }
@@ -82,7 +59,39 @@ public class DataSourceDatabaseInformation implements DatabaseInformation {
 
     @Override
     public String getTableSchemas() {
-        return this.tableSchemas;
+        // get realtime table schemas
+        String tableSchemas;
+        if (databaseInformationProperties.getTableSchemas() != null) {
+            tableSchemas = databaseInformationProperties.getTableSchemas();
+        } else {
+            try (Connection con = dataSource.getConnection()) {
+                DatabaseMetaData dmd = con.getMetaData();
+                List<Table> tables = new ArrayList<>();
+                try (ResultSet rs = dmd.getTables(con.getCatalog(), null, null,
+                        new String[]{"TABLE"})) {
+                    while (rs.next()) {
+                        String tableName = rs.getString("TABLE_NAME");
+                        if (!isAllowed(databaseInformationProperties.getTablePatterns(), tableName)) {
+                            continue;
+                        }
+                        List<Column> columns = new ArrayList<>();
+                        try (ResultSet cols = dmd.getColumns(null, null, tableName, null)) {
+                            while (cols.next()) {
+                                columns.add(
+                                        new Column(cols.getString("COLUMN_NAME"), cols.getString("TYPE_NAME"), cols.getString("REMARKS"))
+                                );
+                            }
+                        }
+                        tables.add(new Table(tableName, rs.getString("REMARKS"), rs.getString("TABLE_CAT"), rs.getString("TABLE_SCHEM"), columns));
+                    }
+                }
+                tableSchemas = tables.toString();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+        }
+        return tableSchemas;
+
     }
 
     public record Table(
