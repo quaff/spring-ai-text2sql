@@ -16,7 +16,15 @@ public class Text2Sql {
                 .build();
     }
 
+    public ChatClient getChatClient() {
+        return this.chatClient;
+    }
+
     public String query(String query) {
         return chatClient.prompt().user(query).call().content();
+    }
+
+    public <T> T query(String query, Class<T> type) {
+        return chatClient.prompt().user(query).call().entity(type);
     }
 }
