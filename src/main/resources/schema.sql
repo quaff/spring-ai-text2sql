@@ -1,6 +1,21 @@
-CREATE TABLE exam_scores(
+CREATE TABLE grade (
+    id INTEGER COMMENT "年级ID",
+    name VARCHAR(100) NOT NULL,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE class (
+    id INTEGER COMMENT "班级ID",
+    name VARCHAR(100) NOT NULL,
+    grade_id INTEGER COMMENT "年级ID",
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE exam_scores (
     id INTEGER NOT NULL AUTO_INCREMENT,
     name VARCHAR(100) NOT NULL,
     score INTEGER NOT NULL,
+    class_id INTEGER COMMENT "班级ID",
     PRIMARY KEY (id)
 );
+

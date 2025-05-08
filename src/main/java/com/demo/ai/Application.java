@@ -15,9 +15,15 @@ public class Application {
 	public static void main(String[] args) {
 		Text2Sql text2Sql = new SpringApplicationBuilder(Application.class).web(WebApplicationType.NONE).run(args).getBean(Text2Sql.class);
 
-		simpleBoolean(text2Sql);
+		multipleTable(text2Sql);
 	}
 
+	public static void multipleTable(Text2Sql text2Sql) {
+		String question = "哪一个班的平均分最高？每个年级的平均分是多少？";
+		logger.info("用户提问：\n{}", question);
+		String answer = text2Sql.query(question);
+		logger.info("AI回答：\n{}", answer);
+	}
 
 	public static void natural(Text2Sql text2Sql) {
 		String question = "谁考的分最高？谁考的分最少？平均分又是多少？最接近平均分的是谁？";
