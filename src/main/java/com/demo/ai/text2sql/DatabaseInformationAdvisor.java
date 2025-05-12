@@ -1,11 +1,10 @@
 package com.demo.ai.text2sql;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.springframework.ai.chat.client.advisor.api.AdvisedRequest;
-import org.springframework.ai.chat.client.advisor.api.AdvisedResponse;
+import org.springframework.ai.chat.client.ChatClientRequest;
+import org.springframework.ai.chat.client.ChatClientResponse;
+import org.springframework.ai.chat.client.advisor.api.AdvisorChain;
 import org.springframework.ai.chat.client.advisor.api.BaseAdvisor;
+import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
 
@@ -23,23 +22,22 @@ public class DatabaseInformationAdvisor implements BaseAdvisor {
     }
 
     @Override
-    public AdvisedRequest before(AdvisedRequest advisedRequest) {
-        Map<String, Object> systemParams = new HashMap<>(advisedRequest.systemParams());
-        systemParams.put("databaseProductName", databaseInformation.getDatabaseProductName());
-        systemParams.put("databaseVersion", databaseInformation.getDatabaseVersion());
-        return AdvisedRequest.from(advisedRequest)
-                .systemText(DEFAULT_SYSTEM_TEXT)
-                .systemParams(systemParams)
+    public int getOrder() {
+        return Ordered.HIGHEST_PRECEDENCE;
+    }
+
+    @Override
+    public ChatClientRequest before(ChatClientRequest chatClientRequest, AdvisorChain advisorChain) {
+        PromptTemplate template = new PromptTemplate(DEFAULT_SYSTEM_TEXT);
+        template.add("databaseProductName", databaseInformation.getDatabaseProductName());
+        template.add("databaseVersion", databaseInformation.getDatabaseVersion());
+        return chatClientRequest.mutate()
+                .prompt(chatClientRequest.prompt().augmentSystemMessage(template.render()))
                 .build();
     }
 
     @Override
-    public AdvisedResponse after(AdvisedResponse advisedResponse) {
-        return advisedResponse;
-    }
-
-    @Override
-    public int getOrder() {
-        return Ordered.HIGHEST_PRECEDENCE;
+    public ChatClientResponse after(ChatClientResponse chatClientResponse, AdvisorChain advisorChain) {
+        return chatClientResponse;
     }
 }

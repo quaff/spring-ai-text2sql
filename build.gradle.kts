@@ -16,12 +16,15 @@ repositories {
 	maven {
 		url = uri("https://repo.spring.io/milestone")
 	}
+	maven {
+		url = uri("https://repo.spring.io/snapshot")
+	}
 }
 
 dependencies {
-	implementation(platform("org.springframework.ai:spring-ai-bom:1.0.0-M7"))
+	implementation(platform("org.springframework.ai:spring-ai-bom:1.0.0-SNAPSHOT"))
 	implementation("org.springframework.boot:spring-boot-starter-jdbc")
-	implementation("org.springframework.ai:spring-ai-starter-model-openai")
+	implementation("org.springframework.ai:spring-ai-starter-model-deepseek")
 	implementation("com.github.jsqlparser:jsqlparser:5.1")
 	runtimeOnly("org.springframework.boot:spring-boot-docker-compose")
 	runtimeOnly("com.mysql:mysql-connector-j")
