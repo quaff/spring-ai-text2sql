@@ -40,13 +40,6 @@ public class DataSourceDatabaseInformation implements DatabaseInformation {
         }
     }
 
-    private static boolean isAllowed(List<String> tablePatterns, String tableName) {
-        if (CollectionUtils.isEmpty(tablePatterns)) {
-            return true;
-        }
-        return PatternMatchUtils.simpleMatch(tablePatterns.toArray(new String[0]), tableName);
-    }
-
     @Override
     public String getDatabaseProductName() {
         return this.databaseProductName;
@@ -67,7 +60,7 @@ public class DataSourceDatabaseInformation implements DatabaseInformation {
             try (Connection con = dataSource.getConnection()) {
                 DatabaseMetaData dmd = con.getMetaData();
                 List<Table> tables = new ArrayList<>();
-                try (ResultSet rs = dmd.getTables(con.getCatalog(), null, null,
+                try (ResultSet rs = dmd.getTables(con.getCatalog(), con.getSchema(), null,
                         new String[]{"TABLE"})) {
                     while (rs.next()) {
                         String tableName = rs.getString("TABLE_NAME");
@@ -92,6 +85,13 @@ public class DataSourceDatabaseInformation implements DatabaseInformation {
         }
         return tableSchemas;
 
+    }
+
+    private static boolean isAllowed(List<String> tablePatterns, String tableName) {
+        if (CollectionUtils.isEmpty(tablePatterns)) {
+            return true;
+        }
+        return PatternMatchUtils.simpleMatch(tablePatterns.toArray(new String[0]), tableName);
     }
 
     public record Table(

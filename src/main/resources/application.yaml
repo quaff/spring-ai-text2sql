@@ -1,8 +1,8 @@
 spring.application.name: spring-ai-text2sql
 
-spring.sql.init:
-  mode: always
-  continue-on-error: true
+spring.sql.init.mode: always
+
+spring.docker.compose.enabled: false # enable it to use MySQL
 
 spring.ai.deepseek:
   base-url: https://api.deepseek.com

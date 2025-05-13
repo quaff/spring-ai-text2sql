@@ -28,6 +28,7 @@ dependencies {
 	implementation("com.github.jsqlparser:jsqlparser:5.1")
 	runtimeOnly("org.springframework.boot:spring-boot-docker-compose")
 	runtimeOnly("com.mysql:mysql-connector-j")
+	runtimeOnly("com.h2database:h2")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.boot:spring-boot-testcontainers")
 	testImplementation("org.testcontainers:mysql")
