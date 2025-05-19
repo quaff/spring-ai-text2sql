@@ -1,5 +1,7 @@
 package com.demo.ai.text2sql;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -9,7 +11,6 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +19,8 @@ import java.util.Map;
 @Component
 @EnableConfigurationProperties(DatabaseInformationProperties.class)
 public class DataSourceDatabaseInformation implements DatabaseInformation {
+
+    private final ObjectMapper objectMapper = new ObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
     private final DataSource dataSource;
 
@@ -85,11 +88,11 @@ public class DataSourceDatabaseInformation implements DatabaseInformation {
                                 );
                             }
                         }
-                        tables.add(new Table(tableName, rs.getString("REMARKS"), rs.getString("TABLE_CAT"), rs.getString("TABLE_SCHEM"), columns));
+                        tables.add(new Table(tableName, rs.getString("REMARKS"), columns));
                     }
                 }
-                tableSchemas = tables.toString();
-            } catch (SQLException ex) {
+                tableSchemas = objectMapper.writeValueAsString(tables);
+            } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }
         }
@@ -107,8 +110,6 @@ public class DataSourceDatabaseInformation implements DatabaseInformation {
     public record Table(
             String name,
             String description,
-            String catalog,
-            String schema,
             List<Column> columns) {
     }
 
