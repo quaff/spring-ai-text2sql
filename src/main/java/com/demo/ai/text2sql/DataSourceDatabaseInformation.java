@@ -11,7 +11,9 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 @EnableConfigurationProperties(DatabaseInformationProperties.class)
@@ -67,11 +69,19 @@ public class DataSourceDatabaseInformation implements DatabaseInformation {
                         if (!isAllowed(databaseInformationProperties.getTablePatterns(), tableName)) {
                             continue;
                         }
+
+                        Map<String, String> foreignKeyMapping = new HashMap<>();
+                        try (ResultSet foreignKeys = dmd.getImportedKeys(null, null, tableName)) {
+                            while (foreignKeys.next()) {
+                                foreignKeyMapping.put(foreignKeys.getString("FKCOLUMN_NAME"), "%s(%s)".formatted(foreignKeys.getString("PKTABLE_NAME"), foreignKeys.getString("PKCOLUMN_NAME")));
+                            }
+                        }
                         List<Column> columns = new ArrayList<>();
                         try (ResultSet cols = dmd.getColumns(null, null, tableName, null)) {
                             while (cols.next()) {
+                                String columnName = cols.getString("COLUMN_NAME");
                                 columns.add(
-                                        new Column(cols.getString("COLUMN_NAME"), cols.getString("TYPE_NAME"), cols.getString("REMARKS"))
+                                        new Column(columnName, cols.getString("TYPE_NAME"), cols.getString("REMARKS"), foreignKeyMapping.get(columnName))
                                 );
                             }
                         }
@@ -105,6 +115,7 @@ public class DataSourceDatabaseInformation implements DatabaseInformation {
     record Column(
             String name,
             String dataType,
-            String description) {
+            String description,
+            String foreignKeyReference) {
     }
 }
