@@ -22,7 +22,7 @@ repositories {
 }
 
 dependencies {
-	implementation(platform("org.springframework.ai:spring-ai-bom:1.0.0-SNAPSHOT"))
+	implementation(platform("org.springframework.ai:spring-ai-bom:1.0.0"))
 	implementation("org.springframework.boot:spring-boot-starter-jdbc")
 	implementation("org.springframework.ai:spring-ai-starter-model-deepseek")
 	// implementation("org.springframework.ai:spring-ai-starter-model-ollama")
