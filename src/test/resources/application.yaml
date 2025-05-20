@@ -11,3 +11,6 @@ spring.ai.deepseek:
 
 spring.ai.ollama:
   chat.options.model: qwen3:8b
+
+text2sql:
+  logging: true

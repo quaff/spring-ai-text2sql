@@ -2,8 +2,6 @@ package com.demo.ai.text2sql;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.PatternMatchUtils;
 
@@ -16,26 +14,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Component
-@EnableConfigurationProperties(DatabaseInformationProperties.class)
 public class DataSourceDatabaseInformation implements DatabaseInformation {
 
     private final ObjectMapper objectMapper = new ObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
     private final DataSource dataSource;
 
-    private final DatabaseInformationProperties databaseInformationProperties;
+    private final Text2SqlProperties.Database database;
 
     private final String databaseProductName;
 
     private final String databaseVersion;
 
-    public DataSourceDatabaseInformation(DataSource dataSource, DatabaseInformationProperties databaseInformationProperties) throws Exception {
+    public DataSourceDatabaseInformation(DataSource dataSource, Text2SqlProperties text2SqlProperties) throws Exception {
         this.dataSource = dataSource;
-        this.databaseInformationProperties = databaseInformationProperties;
-        if (databaseInformationProperties.getDatabaseProductName() != null) {
-            this.databaseProductName = databaseInformationProperties.getDatabaseProductName();
-            this.databaseVersion = databaseInformationProperties.getDatabaseVersion();
+        this.database = text2SqlProperties.getDatabase();
+        if (this.database.getProductName() != null) {
+            this.databaseProductName = this.database.getProductName();
+            this.databaseVersion = this.database.getVersion();
         } else {
             try (Connection con = dataSource.getConnection()) {
                 DatabaseMetaData dmd = con.getMetaData();
@@ -59,8 +55,8 @@ public class DataSourceDatabaseInformation implements DatabaseInformation {
     public String getTableSchemas() {
         // get realtime table schemas
         String tableSchemas;
-        if (databaseInformationProperties.getTableSchemas() != null) {
-            tableSchemas = databaseInformationProperties.getTableSchemas();
+        if (this.database.getTableSchemas() != null) {
+            tableSchemas = this.database.getTableSchemas();
         } else {
             try (Connection con = dataSource.getConnection()) {
                 DatabaseMetaData dmd = con.getMetaData();
@@ -69,7 +65,7 @@ public class DataSourceDatabaseInformation implements DatabaseInformation {
                         new String[]{"TABLE"})) {
                     while (rs.next()) {
                         String tableName = rs.getString("TABLE_NAME");
-                        if (!isAllowed(databaseInformationProperties.getTablePatterns(), tableName)) {
+                        if (!isAllowed(this.database.getTablePatterns(), tableName)) {
                             continue;
                         }
 

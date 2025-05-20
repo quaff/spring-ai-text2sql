@@ -6,9 +6,7 @@ import org.springframework.ai.chat.client.advisor.api.AdvisorChain;
 import org.springframework.ai.chat.client.advisor.api.BaseAdvisor;
 import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.core.Ordered;
-import org.springframework.stereotype.Component;
 
-@Component
 public class DatabaseInformationAdvisor implements BaseAdvisor {
 
     private static final String DEFAULT_SYSTEM_TEXT = """

@@ -11,9 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.ai.tool.annotation.ToolParam;
 import org.springframework.jdbc.core.simple.JdbcClient;
-import org.springframework.stereotype.Component;
 
-@ToolComponent
 public class JdbcClientTool {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());

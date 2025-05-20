@@ -1,10 +1,7 @@
 package com.demo.ai.text2sql;
 
 import org.springframework.ai.tool.annotation.Tool;
-import org.springframework.ai.tool.annotation.ToolParam;
-import org.springframework.stereotype.Component;
 
-@ToolComponent
 public class TableSchemaTool {
 
     private final DatabaseInformation databaseInformation;
