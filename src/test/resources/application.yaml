@@ -4,6 +4,11 @@ spring.sql.init.mode: always
 
 spring.docker.compose.enabled: false # enable it to use MySQL
 
+spring.ai.openai:
+  base-url: https://api.deepseek.com
+  api-key: sk-288368f95ba34154b071ecf8d0ac56f1
+  chat.options.model: deepseek-chat
+
 spring.ai.deepseek:
   base-url: https://api.deepseek.com
   api-key: sk-288368f95ba34154b071ecf8d0ac56f1
