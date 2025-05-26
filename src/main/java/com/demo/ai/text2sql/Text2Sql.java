@@ -24,4 +24,20 @@ public class Text2Sql {
     public <T> T query(String query, Class<T> type) {
         return chatClient.prompt().user(query).call().entity(type);
     }
+
+    public String echarts(String query) {
+        query += "\n请返回Apache Echarts需要的数据格式。";
+        String content = chatClient.prompt().user(query).call().content();
+        if (content == null) {
+            return content;
+        }
+        int index = content.indexOf("```");
+        if (index > -1) {
+            index = index + (content.contains("```json") ? 7 : 3);
+            content = content.substring(index);
+            content = content.substring(0, content.indexOf("```"));
+        }
+        return content;
+    }
+
 }

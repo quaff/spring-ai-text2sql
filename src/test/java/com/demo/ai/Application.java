@@ -15,7 +15,14 @@ public class Application {
 	public static void main(String[] args) {
 		Text2Sql text2Sql = new SpringApplicationBuilder(Application.class).web(WebApplicationType.NONE).run(args).getBean(Text2Sql.class);
 
-		multipleTable(text2Sql);
+		echarts(text2Sql);
+	}
+
+	public static void echarts(Text2Sql text2Sql) {
+		String question = "每个年级的平均分是多少？";
+		logger.info("用户提问：\n{}", question);
+		String answer = text2Sql.echarts(question);
+		logger.info("AI回答：\n{}", answer);
 	}
 
 	public static void multipleTable(Text2Sql text2Sql) {
