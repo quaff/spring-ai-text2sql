@@ -34,8 +34,8 @@ class Text2SqlAutoConfiguration {
 
     @ToolBean
     @ConditionalOnMissingBean
-    JdbcClientTool jdbcClientTool(JdbcClient jdbcClient) {
-        return new JdbcClientTool(jdbcClient);
+    JdbcClientTool jdbcClientTool(JdbcClient jdbcClient, Text2SqlProperties text2SqlProperties) {
+        return new JdbcClientTool(jdbcClient, text2SqlProperties);
     }
 
     @ToolBean

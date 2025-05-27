@@ -18,16 +18,20 @@ public class JdbcClientTool {
 
     private final JdbcClient jdbcClient;
 
-    public JdbcClientTool(JdbcClient jdbcClient) {
+    private final Text2SqlProperties text2SqlProperties;
+
+    public JdbcClientTool(JdbcClient jdbcClient, Text2SqlProperties text2SqlProperties) {
         this.jdbcClient = jdbcClient;
+        this.text2SqlProperties = text2SqlProperties;
     }
 
     @Tool(description = "执行查询语句返回CSV格式结果")
     public String query(@ToolParam(description = "查询语句") String sql) {
-        logger.info("Executing:\n{}", sql);
         if (!isAllowed(sql)) {
+            logger.info("Banned SQL:\n{}", sql);
             return "不能执行此查询语句";
         }
+        logger.info("Executing:\n{}", sql);
         List<Map<String, Object>> rows = jdbcClient.sql(sql)
                 .query().listOfRows();
         if (rows.isEmpty())
@@ -42,7 +46,9 @@ public class JdbcClientTool {
             list.add(sj.toString());
         }
         String result = String.join("\n", list);
-        logger.info("Executed result:\n{}", result);
+        if (text2SqlProperties.isLogging()) {
+            logger.info("Executed result:\n{}", result);
+        }
         return result;
     }
 
