@@ -16,37 +16,17 @@
 		#submit {
 			width: 200px;
 		}
-		#echarts {
+		#result, #echarts {
 			padding-top: 50px;
 			height: 400px;
 		}
 	</style>
 	<script>
 		$(function () {
+			var queryingText = false;
+			var chart;
 			var input = $('input[name="query"]');
 			var submit = $('#submit');
-			submit.on('click', function (e) {
-				$.post('echarts', {'query': input.val()}, function(data) {
-					try {
-						$(data.series).each(function(index, item) {
-							item.label = {
-								'show': true,
-								'position': 'top'
-							};
-						});
-						var chart = echarts.init(document.getElementById('echarts'));
-						chart.setOption(data);
-					} catch(e) {
-						console.log(e);
-						alert('此问题不适合生成图表展示，请换一种问法。');
-					}
-					input.removeAttr('readonly');
-					submit.removeAttr('disabled').html('查询');
-				});
-				input.attr('readonly', 'readonly');
-				submit.attr('disabled', 'disabled').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>正在查询...');
-				return false;
-			});
 			input.keypress(function(event) {
 				if (event.which === 13) {
 					input.blur();
@@ -54,6 +34,53 @@
 					event.preventDefault();
 				}
 			});
+			$.ajaxSetup({
+			  beforeSend: function() {
+			  	if (!queryingText) {
+			  		input.attr('readonly', 'readonly');
+					submit.attr('disabled', 'disabled').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>正在查询...');
+			  	}
+			  },
+			  complete: function() {
+			  	if (!queryingText) {
+					input.removeAttr('readonly');
+					submit.removeAttr('disabled').html('查询');
+				}
+			  }
+			});
+
+			submit.on('click', function (e) {
+				if (chart != null) {
+					chart.clear();
+				}
+				$('#echarts,#result').remove();
+				var query = input.val();
+				$.post('echarts', {'query': query}, function(data) {
+					try {
+						$(data.series).each(function(index, item) {
+							item.label = {
+								'show': true,
+								'position': 'top'
+							};
+						});
+						$('<div id="echarts"/>').appendTo($('.container'));
+						chart = echarts.init(document.getElementById('echarts'));
+						chart.setOption(data);
+					} catch(e) {
+					}
+					if ($('#echarts').find('canvas').length == 0) {
+						$('#echarts').remove();
+						// fallback to text query
+						queryingText = true;
+						$.post('query', {'query': query}, function(data) {
+							$('<div id="result"/>').appendTo($('.container')).html(data);
+							queryingText = false;
+						});
+					}
+				});
+				return false;
+			});
+
 		});
 	</script>
 </head>
@@ -64,7 +91,6 @@
 		<input type="text" name="query" class="form-control rounded" placeholder="请输入你的问题，比如：每个班级的平均分是多少？"/>
 		<button type="button" id="submit" class="btn btn-primary">查询</button>
 	</div>
-	<div id="echarts"></div>
 </div>
 </body>
 
