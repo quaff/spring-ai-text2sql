@@ -1,32 +1,11 @@
 package com.demo.ai.text2sql;
 
-import org.springframework.ai.chat.client.ChatClient;
+public interface Text2Sql {
 
-public class Text2Sql {
+    String query(String query);
 
-    private final ChatClient chatClient;
+    <T> T query(String query, Class<T> type);
 
-    public Text2Sql(ChatClient.Builder builder,
-                    DatabaseInformationAdvisor databaseMetadataAdvisor, Object[] tools) {
-        this.chatClient = builder.defaultAdvisors(databaseMetadataAdvisor)
-                .defaultTools(tools)
-                .build();
-    }
-
-    public ChatClient getChatClient() {
-        return this.chatClient;
-    }
-
-    public String query(String query) {
-        return chatClient.prompt().user(query).call().content();
-    }
-
-    public <T> T query(String query, Class<T> type) {
-        return chatClient.prompt().user(query).call().entity(type);
-    }
-
-    public String echarts(String query) {
-        return chatClient.prompt().user(query).call().entity(new EChartsStructuredOutputConverter());
-    }
+    String echarts(String query);
 
 }

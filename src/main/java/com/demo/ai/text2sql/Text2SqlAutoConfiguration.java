@@ -48,7 +48,7 @@ class Text2SqlAutoConfiguration {
     @ConditionalOnMissingBean
     Text2Sql text2Sql(ChatClient.Builder builder,
                       DatabaseInformationAdvisor databaseMetadataAdvisor, @ToolBean Object[] tools) {
-        return new Text2Sql(builder, databaseMetadataAdvisor, tools);
+        return new DefaultText2Sql(builder, databaseMetadataAdvisor, tools);
     }
 
     @ConditionalOnProperty(prefix = Text2SqlProperties.CONFIG_PREFIX, name = "logging", havingValue = "true")
