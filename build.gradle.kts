@@ -1,6 +1,6 @@
 plugins {
 	id("org.springframework.boot").version("3.4.4")
-	id("io.spring.dependency-management").version("latest.release")
+	id("io.spring.dependency-management").version("1.1.7")
 	java
 }
 
@@ -29,6 +29,9 @@ dependencies {
 	// implementation("org.springframework.ai:spring-ai-starter-model-deepseek")
 	// implementation("org.springframework.ai:spring-ai-starter-model-ollama")
 	implementation("com.github.jsqlparser:jsqlparser:5.1")
+	implementation("org.webjars:jquery:3.7.1")
+	implementation("org.webjars:bootstrap:5.3.5")
+	implementation("org.webjars:echarts:5.5.0")
 
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.boot:spring-boot-testcontainers")
