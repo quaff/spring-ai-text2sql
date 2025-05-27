@@ -3,7 +3,6 @@ package com.demo.ai;
 import com.demo.ai.text2sql.Text2Sql;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
 public class WebApplication {
@@ -12,8 +11,7 @@ public class WebApplication {
         SpringApplication.run(WebApplication.class, args);
     }
 
-    // comment this annotation to use AI
-    @Bean
+    // @org.springframework.context.annotation.Bean
     Text2Sql testText2Sql() {
         return new Text2Sql() {
             @Override
@@ -23,7 +21,7 @@ public class WebApplication {
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
-                return "模拟结果";
+                return "这是模拟的文本结果";
             }
 
             @Override
@@ -37,6 +35,10 @@ public class WebApplication {
                     Thread.sleep(1000); // simulate long running query
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
+                }
+                if (query.contains("文本结果")) {
+                    // simulate error response
+                    return "{}";
                 }
                 return """
                         {
