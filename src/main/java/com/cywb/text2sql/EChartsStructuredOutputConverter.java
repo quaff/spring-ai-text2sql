@@ -11,7 +11,7 @@ public class EChartsStructuredOutputConverter implements StructuredOutputConvert
 		if (index > -1) {
 			index = index + (text.contains("```json") ? 7 : 3);
 			text = text.substring(index);
-			text = text.substring(0, text.indexOf("```"));
+			text = text.substring(0, text.indexOf("```")).trim();
 		}
 		return text;
 	}
@@ -19,11 +19,7 @@ public class EChartsStructuredOutputConverter implements StructuredOutputConvert
 	@Override
 	public String getFormat() {
 		return """
-				Your response should be regular result with explanations if it's not suitable for chart presentation.
-				Your response should be in JSON format if it's suitable for the Apache ECharts library.
-				The data structure for the JSON should match Apache ECharts required data format.
-				Do not include any explanations, only provide a RFC8259 compliant JSON response following this format without deviation.
-				Remove the ```json markdown surrounding the output including the trailing "```".
+				如果回答适合使用图表展现的话，请返回不包含任何解释和推理过程的符合ECharts格式的JSON结果。
 				""";
 	}
 
