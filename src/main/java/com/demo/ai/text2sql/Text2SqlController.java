@@ -20,7 +20,7 @@ public class Text2SqlController {
         return this.text2Sql.query(query);
     }
 
-    @RequestMapping(value = "/echarts", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/echarts", produces = MediaType.TEXT_PLAIN_VALUE)
     public String echarts(@RequestParam String query) {
         return this.text2Sql.echarts(query);
     }

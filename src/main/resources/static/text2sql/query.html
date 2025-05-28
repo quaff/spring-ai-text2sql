@@ -61,6 +61,14 @@
 				var query = input.val();
 				$.post('echarts', {'query': query}, function(data) {
 					try {
+						if (typeof data == 'string') {
+							if (data.startsWith('{') && data.endsWith('}')) {
+								data = JSON.parse(data);
+							} else {
+								$('<div id="result"/>').appendTo($('.container')).html(data);
+								return false;
+							}
+						}
 						$(data.series).each(function(index, item) {
 							item.label = {
 								'show': true,
@@ -92,7 +100,7 @@
 <body>
 <div class="container">
 	<div class="input-group">
-		<input type="text" name="query" class="form-control rounded" placeholder="请输入你的问题，比如：每个班级的平均分是多少？"/>
+		<input type="text" name="query" class="form-control rounded" placeholder="请输入关于数据统计分析的问题？"/>
 		<button type="button" id="submit" class="btn btn-primary">查询</button>
 	</div>
 </div>

@@ -38,7 +38,7 @@ public class WebApplication {
                 }
                 if (query.contains("文本结果")) {
                     // simulate error response
-                    return "{}";
+                    return "这是模拟的文本结果";
                 }
                 return """
                         {
