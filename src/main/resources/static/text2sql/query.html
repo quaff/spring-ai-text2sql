@@ -54,14 +54,18 @@
 			});
 
 			submit.on('click', function (e) {
+				var query = $.trim(input.val());
+				if (!query) {
+					return false;
+				}
 				if (chart != null) {
 					chart.clear();
 				}
 				$('#echarts,#result').remove();
-				var query = input.val();
 				$.post('echarts', {'query': query}, function(data) {
 					try {
 						if (typeof data == 'string') {
+							data = $.trim(data);
 							if (data.startsWith('{') && data.endsWith('}')) {
 								data = JSON.parse(data);
 							} else {
