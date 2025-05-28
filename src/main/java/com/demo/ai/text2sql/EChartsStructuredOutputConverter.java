@@ -19,7 +19,8 @@ public class EChartsStructuredOutputConverter implements StructuredOutputConvert
     @Override
     public String getFormat() {
         return """
-                Your response should be in JSON format.
+                Your response should be regular result with explanations if it's not suitable for chart presentation.
+                Your response should be in JSON format if it's suitable for the Apache ECharts library.
                 The data structure for the JSON should match Apache ECharts required data format.
                 Do not include any explanations, only provide a RFC8259 compliant JSON response following this format without deviation.
                 Remove the ```json markdown surrounding the output including the trailing "```".
