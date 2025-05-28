@@ -1,6 +1,5 @@
-package com.demo.ai;
+package com.cywb.text2sql;
 
-import com.demo.ai.text2sql.Text2Sql;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

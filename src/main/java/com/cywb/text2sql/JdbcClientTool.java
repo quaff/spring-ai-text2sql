@@ -1,4 +1,4 @@
-package com.demo.ai.text2sql;
+package com.cywb.text2sql;
 
 import java.util.ArrayList;
 import java.util.List;

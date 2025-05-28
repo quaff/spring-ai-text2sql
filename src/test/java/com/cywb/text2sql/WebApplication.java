@@ -1,6 +1,4 @@
-package com.demo.ai;
-
-import com.demo.ai.text2sql.Text2Sql;
+package com.cywb.text2sql;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

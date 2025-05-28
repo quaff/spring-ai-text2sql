@@ -1,4 +1,4 @@
-package com.demo.ai.text2sql;
+package com.cywb.text2sql;
 
 import org.springframework.ai.tool.annotation.Tool;
 
