@@ -59,6 +59,11 @@ class Text2SqlAutoConfiguration {
 		return builder -> builder.requestInterceptor(new LoggingClientHttpRequestInterceptor());
 	}
 
+	@Bean
+	Text2SqlController text2SqlController(Text2Sql text2Sql) {
+		return new Text2SqlController(text2Sql);
+	}
+
 	@Qualifier
 	@Bean
 	@Target({ ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD })

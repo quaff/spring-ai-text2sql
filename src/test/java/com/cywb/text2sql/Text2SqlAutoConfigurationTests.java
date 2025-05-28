@@ -28,6 +28,7 @@ class Text2SqlAutoConfigurationTests {
 			assertThat(context).hasSingleBean(JdbcClientTool.class);
 			assertThat(context).hasSingleBean(TableSchemaTool.class);
 			assertThat(context).hasSingleBean(Text2Sql.class);
+			assertThat(context).hasSingleBean(Text2SqlController.class);
 		});
 	}
 
