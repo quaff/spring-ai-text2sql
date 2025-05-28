@@ -3,6 +3,7 @@ package com.demo.ai;
 import com.demo.ai.text2sql.Text2Sql;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -13,7 +14,9 @@ public class Application {
 	private static final Logger logger = LoggerFactory.getLogger(Application.class);
 
 	public static void main(String[] args) {
-		Text2Sql text2Sql = new SpringApplicationBuilder(Application.class).web(WebApplicationType.NONE).run(args).getBean(Text2Sql.class);
+		Text2Sql text2Sql = new SpringApplicationBuilder(Application.class).web(WebApplicationType.NONE)
+			.run(args)
+			.getBean(Text2Sql.class);
 
 		echarts(text2Sql);
 	}
