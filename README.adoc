@@ -1,0 +1,23 @@
+= 自然语言查询数据通过图表方式展现
+
+为Spring Boot应用提供AI数据查询分析支持，用户可以用自然语言提问，AI会查询本应用的数据库，优先生成图表展现，对于不适合图表展现的问题，会用自然语言回答。
+
+== 上手
+
+添加依赖:
+[source,kotlin]
+----
+implementation("com.cywb:spring-ai-text2sql:{version}")
+----
+
+配置参数:
+[source,yaml]
+----
+spring.ai.openai:
+  base-url: https://api.deepseek.com # 替换成兼容OpenAI的地址，比如私有化部署的模型
+  api-key: sk-xxx #替换成目标Key，私有化部署的模型一般不需要
+  chat.options.model: deepseek-chat #替换成目标模型
+----
+
+访问入口：
+http://localhost:8080/text2sql/query.html
