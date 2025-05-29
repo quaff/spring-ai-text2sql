@@ -15,7 +15,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.client.RestClientCustomizer;
 import org.springframework.context.annotation.Bean;
-import org.springframework.jdbc.core.simple.JdbcClient;
 
 @AutoConfiguration
 @EnableConfigurationProperties(Text2SqlProperties.class)
@@ -36,8 +35,8 @@ class Text2SqlAutoConfiguration {
 
 	@ToolBean
 	@ConditionalOnMissingBean
-	JdbcClientTool jdbcClientTool(JdbcClient jdbcClient, Text2SqlProperties text2SqlProperties) {
-		return new JdbcClientTool(jdbcClient, text2SqlProperties);
+	JdbcClientTool jdbcClientTool(DataSource dataSource, Text2SqlProperties text2SqlProperties) {
+		return new JdbcClientTool(dataSource, text2SqlProperties);
 	}
 
 	@ToolBean

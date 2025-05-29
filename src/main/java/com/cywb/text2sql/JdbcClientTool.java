@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringJoiner;
 
+import javax.sql.DataSource;
+
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statement;
@@ -14,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.ai.tool.annotation.ToolParam;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.JdbcClient;
 
 public class JdbcClientTool {
@@ -24,8 +27,10 @@ public class JdbcClientTool {
 
 	private final Text2SqlProperties text2SqlProperties;
 
-	public JdbcClientTool(JdbcClient jdbcClient, Text2SqlProperties text2SqlProperties) {
-		this.jdbcClient = jdbcClient;
+	public JdbcClientTool(DataSource dataSource, Text2SqlProperties text2SqlProperties) {
+		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+		jdbcTemplate.setMaxRows(text2SqlProperties.getJdbc().getMaxRows());
+		this.jdbcClient = JdbcClient.create(jdbcTemplate);
 		this.text2SqlProperties = text2SqlProperties;
 	}
 

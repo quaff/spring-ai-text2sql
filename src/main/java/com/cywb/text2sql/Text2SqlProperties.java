@@ -11,6 +11,10 @@ public class Text2SqlProperties {
 
 	private boolean logging;
 
+	private final Database database = new Database();
+
+	private final Jdbc jdbc = new Jdbc();
+
 	public boolean isLogging() {
 		return this.logging;
 	}
@@ -19,14 +23,12 @@ public class Text2SqlProperties {
 		this.logging = logging;
 	}
 
-	private Database database = new Database();
-
 	public Database getDatabase() {
 		return this.database;
 	}
 
-	public void setDatabase(Database database) {
-		this.database = database;
+	public Jdbc getJdbc() {
+		return this.jdbc;
 	}
 
 	public static class Database {
@@ -69,6 +71,20 @@ public class Text2SqlProperties {
 
 		public void setTablePatterns(List<String> tablePatterns) {
 			this.tablePatterns = tablePatterns;
+		}
+
+	}
+
+	public static class Jdbc {
+
+		private int maxRows = 500;
+
+		public int getMaxRows() {
+			return this.maxRows;
+		}
+
+		public void setMaxRows(int maxRows) {
+			this.maxRows = maxRows;
 		}
 
 	}
