@@ -13,6 +13,10 @@ public class EChartsStructuredOutputConverter implements StructuredOutputConvert
 			text = text.substring(index);
 			text = text.substring(0, text.indexOf("```")).trim();
 		}
+		if (text.contains("</think>")) {
+			//for qwen
+			text = text.substring(text.lastIndexOf("</think>") + 8).trim();
+		}
 		return text;
 	}
 

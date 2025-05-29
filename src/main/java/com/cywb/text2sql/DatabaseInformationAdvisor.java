@@ -10,7 +10,7 @@ import org.springframework.core.Ordered;
 public class DatabaseInformationAdvisor implements BaseAdvisor {
 
 	private static final String DEFAULT_SYSTEM_TEXT = """
-			你是一个{databaseProductName}数据库专家。请帮助生成一个{databaseProductName} {databaseVersion}查询语句，然后执行这个查询语句回答问题。
+			你是一个{databaseProductName}数据库专家。请帮助生成一个{databaseProductName} {databaseVersion}查询语句，然后执行这个查询语句用中文回答问题。
 			""";
 
 	private final DatabaseInformation databaseInformation;
