@@ -8,6 +8,7 @@ import java.lang.annotation.Target;
 import javax.sql.DataSource;
 
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -22,9 +23,11 @@ class Text2SqlAutoConfiguration {
 
 	@Bean
 	@ConditionalOnMissingBean
-	DataSourceDatabaseInformation dataSourceDatabaseInformation(DataSource dataSource,
+	DataSourceDatabaseInformation dataSourceDatabaseInformation(
+			@Text2SqlDataSource ObjectProvider<DataSource> text2SqlDataSource, DataSource dataSource,
 			Text2SqlProperties text2SqlProperties) throws Exception {
-		return new DataSourceDatabaseInformation(dataSource, text2SqlProperties);
+		return new DataSourceDatabaseInformation(text2SqlDataSource.getIfAvailable(() -> dataSource),
+				text2SqlProperties);
 	}
 
 	@Bean
@@ -35,8 +38,9 @@ class Text2SqlAutoConfiguration {
 
 	@ToolBean
 	@ConditionalOnMissingBean
-	JdbcClientTool jdbcClientTool(DataSource dataSource, Text2SqlProperties text2SqlProperties) {
-		return new JdbcClientTool(dataSource, text2SqlProperties);
+	JdbcClientTool jdbcClientTool(@Text2SqlDataSource ObjectProvider<DataSource> text2SqlDataSource,
+			DataSource dataSource, Text2SqlProperties text2SqlProperties) {
+		return new JdbcClientTool(text2SqlDataSource.getIfAvailable(() -> dataSource), text2SqlProperties);
 	}
 
 	@ToolBean
