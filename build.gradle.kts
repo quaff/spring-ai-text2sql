@@ -33,7 +33,6 @@ dependencies {
 	implementation("org.springframework.ai:spring-ai-starter-model-openai")
 	// implementation("org.springframework.ai:spring-ai-starter-model-deepseek")
 	// implementation("org.springframework.ai:spring-ai-starter-model-ollama")
-	implementation("""com.github.jsqlparser:jsqlparser:${property("jsqlparser.version")}""")
 	implementation("""org.webjars:jquery:${property("jquery.version")}""")
 	implementation("""org.webjars:bootstrap:${property("bootstrap.version")}""")
 	implementation("""org.webjars:echarts:${property("echarts.version")}""")

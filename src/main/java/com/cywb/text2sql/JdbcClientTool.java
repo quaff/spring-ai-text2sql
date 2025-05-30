@@ -2,15 +2,12 @@ package com.cywb.text2sql;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.StringJoiner;
 
 import javax.sql.DataSource;
 
-import net.sf.jsqlparser.JSQLParserException;
-import net.sf.jsqlparser.parser.CCJSqlParserUtil;
-import net.sf.jsqlparser.statement.Statement;
-import net.sf.jsqlparser.statement.select.Select;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,6 +33,7 @@ public class JdbcClientTool {
 
 	@Tool(description = "执行查询语句返回CSV格式结果")
 	public String query(@ToolParam(description = "查询语句") String sql) {
+		sql = sql.trim();
 		if (!isAllowed(sql)) {
 			logger.info("Banned SQL:\n{}", sql);
 			return "不能执行此查询语句";
@@ -62,14 +60,9 @@ public class JdbcClientTool {
 	}
 
 	private boolean isAllowed(String sql) {
-		try {
-			Statement statement = CCJSqlParserUtil.parse(sql);
-			return statement instanceof Select;
-		}
-		catch (JSQLParserException ex) {
-			logger.error("Invalid SQL:\n" + sql, ex);
-			return false;
-		}
+		String lowerSql = sql.toLowerCase(Locale.ROOT);
+		return !lowerSql.startsWith("update") && !lowerSql.startsWith("delete") && !lowerSql.startsWith("insert")
+				&& !lowerSql.startsWith("merge");
 	}
 
 }
