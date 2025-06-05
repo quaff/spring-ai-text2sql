@@ -29,12 +29,13 @@
 		$(function () {
 			var queryingText = false;
 			var chart;
-			var input = $('input[name="query"]');
-			var submit = $('#submit');
+			var form = $('#query-form');
+			var input = form.find('input[name="query"]');
+			var submit = form.find('submit');
 			input.keypress(function(event) {
 				if (event.which === 13) {
 					input.blur();
-					submit.click();
+					form.submit();
 					event.preventDefault();
 				}
 			});
@@ -53,7 +54,7 @@
 			  }
 			});
 
-			submit.on('click', function (e) {
+			$('#query-form').on('submit', function (e) {
 				var query = $.trim(input.val());
 				if (!query) {
 					return false;
@@ -69,7 +70,7 @@
 							if (data.startsWith('{') && data.endsWith('}')) {
 								data = JSON.parse(data);
 							} else {
-								$('<div id="result"/>').appendTo($('.container')).html(data);
+								$('<div id="result"/>').insertAfter(form).html(data);
 								return false;
 							}
 						}
@@ -79,7 +80,7 @@
 								'position': 'top'
 							};
 						});
-						$('<div id="echarts"/>').appendTo($('.container'));
+						$('<div id="echarts"/>').insertAfter(form);
 						chart = echarts.init(document.getElementById('echarts'));
 						chart.setOption(data);
 					} catch(e) {
@@ -89,7 +90,7 @@
 						// fallback to text query
 						queryingText = true;
 						$.post('query', {'query': query}, function(data) {
-							$('<div id="result"/>').appendTo($('.container')).html(data);
+							$('<div id="result"/>').insertAfter(form).html(data);
 							queryingText = false;
 						});
 					}
@@ -103,10 +104,12 @@
 
 <body>
 <div class="container">
-	<div class="input-group">
-		<input type="text" name="query" class="form-control rounded" placeholder="请输入关于数据统计分析的问题？"/>
-		<button type="button" id="submit" class="btn btn-primary">查询</button>
-	</div>
+	<form id="query-form">
+		<div class="input-group">
+			<input type="text" name="query" class="form-control rounded" placeholder="请输入关于数据统计分析的问题？"/>
+			<button type="submit" class="btn btn-primary">查询</button>
+		</div>
+	</form>
 </div>
 </body>
 
