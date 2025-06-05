@@ -13,22 +13,40 @@
 			padding-top: 40px;
 			background-color: #eee;
 		}
-		#submit {
+		button[type="submit"] {
 			width: 200px;
 		}
-		#echarts {
-			padding-top: 50px;
-			height: 400px;
+		.conversation {
+			margin-top: 5rem;
+			padding: 10px;
+			border: 1px solid #b8daff;
+			border-radius: .5rem;
 		}
-		#result {
-			padding-top: 50px;
-			white-space: pre;
+		.prompt {
+			text-align: center;
+			font-weight: bolder;
+		}
+		.response {
+			margin-top: 2rem;
+		}
+		.response.loading {
+			text-align: center;
+			height: 100px;
+		}
+		.response.loading .spinner-grow {
+			margin-right: 1rem;
+		}
+		.response.text {
+			padding-left: 100px;
+			padding-right: 100px;
+		}
+		.response.echarts {
+			height: 400px;
 		}
 	</style>
 	<script>
 		$(function () {
 			var queryingText = false;
-			var chart;
 			var form = $('#query-form');
 			var input = form.find('input[name="query"]');
 			var submit = form.find('submit');
@@ -59,10 +77,11 @@
 				if (!query) {
 					return false;
 				}
-				if (chart != null) {
-					chart.clear();
-				}
-				$('#echarts,#result').remove();
+				input.val('');
+				var conversation = $('<div class="conversation"><div class="prompt"></div><div class="response"></div></div>').insertAfter(form);
+				conversation.find('.prompt').text(query);
+				var response = conversation.find('.response').addClass('loading').html('<div class="spinner-grow text-primary" role="status"></div><div class="spinner-grow text-success" role="status"></div><div class="spinner-grow text-warning" role="status"></div>');
+				conversation[0].scrollIntoView({behavior: 'smooth'});
 				$.post('echarts', {'query': query}, function(data) {
 					try {
 						if (typeof data == 'string') {
@@ -70,7 +89,7 @@
 							if (data.startsWith('{') && data.endsWith('}')) {
 								data = JSON.parse(data);
 							} else {
-								$('<div id="result"/>').insertAfter(form).html(data);
+								response.removeClass('loading').addClass('text').html(data);
 								return false;
 							}
 						}
@@ -80,17 +99,15 @@
 								'position': 'top'
 							};
 						});
-						$('<div id="echarts"/>').insertAfter(form);
-						chart = echarts.init(document.getElementById('echarts'));
+						var chart = echarts.init(response.removeClass('loading').addClass('echarts')[0]);
 						chart.setOption(data);
 					} catch(e) {
 					}
-					if ($('#echarts').find('canvas').length == 0) {
-						$('#echarts').remove();
+					if (response.find('canvas').length == 0) {
 						// fallback to text query
 						queryingText = true;
 						$.post('query', {'query': query}, function(data) {
-							$('<div id="result"/>').insertAfter(form).html(data);
+							response.removeClass('echarts').addClass('text').html(data);
 							queryingText = false;
 						});
 					}
