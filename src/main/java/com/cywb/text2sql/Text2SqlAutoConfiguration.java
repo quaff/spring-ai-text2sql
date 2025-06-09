@@ -63,8 +63,8 @@ class Text2SqlAutoConfiguration {
 	}
 
 	@Bean
-	Text2SqlController text2SqlController(Text2Sql text2Sql) {
-		return new Text2SqlController(text2Sql);
+	Text2SqlController text2SqlController(Text2Sql text2Sql, Text2SqlProperties text2SqlProperties) {
+		return new Text2SqlController(text2Sql, text2SqlProperties);
 	}
 
 	@Qualifier

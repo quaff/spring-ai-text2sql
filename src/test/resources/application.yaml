@@ -19,3 +19,7 @@ spring.ai.ollama:
 
 text2sql:
   logging: true
+  predefined-prompts:
+    - 每个班级的平均分是多少？
+    - 每个年级的平均分是多少？
+    - 谁的考分最接近平均分？考了多少分？

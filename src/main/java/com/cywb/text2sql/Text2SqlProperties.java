@@ -11,6 +11,8 @@ public class Text2SqlProperties {
 
 	private boolean logging;
 
+	private List<String> predefinedPrompts;
+
 	private final Database database = new Database();
 
 	private final Jdbc jdbc = new Jdbc();
@@ -21,6 +23,14 @@ public class Text2SqlProperties {
 
 	public void setLogging(boolean logging) {
 		this.logging = logging;
+	}
+
+	public List<String> getPredefinedPrompts() {
+		return this.predefinedPrompts;
+	}
+
+	public void setPredefinedPrompts(List<String> predefinedPrompts) {
+		this.predefinedPrompts = predefinedPrompts;
 	}
 
 	public Database getDatabase() {

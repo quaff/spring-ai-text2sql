@@ -46,30 +46,15 @@
 	</style>
 	<script>
 		$(function () {
-			var queryingText = false;
 			var form = $('#query-form');
 			var input = form.find('input[name="query"]');
-			var submit = form.find('submit');
+			var submit = form.find('button[type="submit"]');
 			input.keypress(function(event) {
 				if (event.which === 13) {
 					input.blur();
 					form.submit();
 					event.preventDefault();
 				}
-			});
-			$.ajaxSetup({
-			  beforeSend: function() {
-			  	if (!queryingText) {
-			  		input.attr('readonly', 'readonly');
-					submit.attr('disabled', 'disabled').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>正在查询...');
-			  	}
-			  },
-			  complete: function() {
-			  	if (!queryingText) {
-					input.removeAttr('readonly');
-					submit.removeAttr('disabled').html('查询');
-				}
-			  }
 			});
 
 			$('#query-form').on('submit', function (e) {
@@ -81,9 +66,12 @@
 				var conversation = $('<div class="conversation"><div class="prompt"></div><div class="response"></div></div>').insertAfter(form);
 				conversation.find('.prompt').text(query);
 				var response = conversation.find('.response').addClass('loading').html('<div class="spinner-grow text-primary" role="status"></div><div class="spinner-grow text-success" role="status"></div><div class="spinner-grow text-warning" role="status"></div>');
-				conversation[0].scrollIntoView({behavior: 'smooth'});
-				$.post('echarts', {'query': query}, function(data) {
-					try {
+				//conversation[0].scrollIntoView({behavior: 'smooth'});
+				$.ajax({
+					url: 'echarts',
+					method: 'post',
+					data: {'query': query},
+					success: function(data) {
 						if (typeof data == 'string') {
 							data = $.trim(data);
 							if (data.startsWith('{') && data.endsWith('}')) {
@@ -93,7 +81,7 @@
 								return false;
 							}
 						}
-						$(data.series).each(function(index, item) {
+						$.each(data.series, function(index, item) {
 							item.label = {
 								'show': true,
 								'position': 'top'
@@ -101,20 +89,31 @@
 						});
 						var chart = echarts.init(response.removeClass('loading').addClass('echarts')[0]);
 						chart.setOption(data);
-					} catch(e) {
-					}
-					if (response.find('canvas').length == 0) {
-						// fallback to text query
-						queryingText = true;
-						$.post('query', {'query': query}, function(data) {
-							response.removeClass('echarts').addClass('text').html(data);
-							queryingText = false;
-						});
-					}
+					},
+					beforeSend: function() {
+						form.find('fieldset').attr('disabled', 'disabled');
+						submit.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>正在查询...');
+				  	},
+				  	complete: function() {
+						form.find('fieldset').removeAttr('disabled', 'disabled');
+						submit.removeAttr('disabled').html('查询');
+				  	}
 				});
 				return false;
 			});
 
+			$.ajax({
+				url: 'predefinedPrompts',
+				success: function(data) {
+					if(data && data.length) {
+						var predefinedPrompts = $('<datalist id="predefined-prompts"></datalist>').insertAfter(input);
+						$.each(data, function(index, item) {
+							$('<option/>').val(item).appendTo(predefinedPrompts);
+						});
+						input.attr('list', 'predefined-prompts');
+					}
+				}
+			});
 		});
 	</script>
 </head>
@@ -122,10 +121,12 @@
 <body>
 <div class="container">
 	<form id="query-form">
-		<div class="input-group">
-			<input type="text" name="query" class="form-control rounded" placeholder="请输入关于数据统计分析的问题？"/>
-			<button type="submit" class="btn btn-primary">查询</button>
-		</div>
+		<fieldset>
+			<div class="input-group">
+				<input type="text" name="query" class="form-control rounded" placeholder="请输入关于数据统计分析的问题？"/>
+				<button type="submit" class="btn btn-primary">查询</button>
+			</div>
+		</fieldset>
 	</form>
 </div>
 </body>
