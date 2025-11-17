@@ -90,6 +90,13 @@
 						var chart = echarts.init(response.removeClass('loading').addClass('echarts')[0]);
 						chart.setOption(data);
 					},
+					error: function(jqXHR, textStatus, errorThrown) {
+					    var message = textStatus || errorThrown;
+					    if (jqXHR.responseJSON) {
+					        message = jqXHR.responseJSON.error || message;
+					    }
+					    response.removeClass('loading').addClass('text alert alert-danger').html(message);
+					},
 					beforeSend: function() {
 						form.find('fieldset').attr('disabled', 'disabled');
 						submit.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>正在查询...');
